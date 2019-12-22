@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Signups</title>
+        <meta charset="UTF-8" />
+    </head>
+    
+    <body>
+        <h2>Current Signups</h2>
+        
+        <ul>
+            <li th:each="s : ${signups}">
+                <span th:text="${s.name}">Name</span>
+            </li>
+        </ul>
+    </body>
+</html>
