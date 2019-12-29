@@ -21,10 +21,12 @@ public class SignupDao implements Dao<Signup, Long> {
             return null;
         }
         
-        String name = rs.getString("name");
+        String username = rs.getString("username");
         String address = rs.getString("address");
+        String event = rs.getString("event");
+        boolean anonymous = rs.getBoolean("anonymous");
         
-        Signup s = new Signup(id, name, address);
+        Signup s = new Signup(id, username, address, event, anonymous);
         
         rs.close();
         stmt.close();
@@ -42,10 +44,61 @@ public class SignupDao implements Dao<Signup, Long> {
         List<Signup> signups = new ArrayList<>();
         while(rs.next()) {
             long id = rs.getLong("id");
-            String name = rs.getString("name");
+            String name = rs.getString("username");
             String address = rs.getString("address");
+            String event = rs.getString("event");
+            boolean anonymous = rs.getBoolean("anonymous");
             
-            signups.add(new Signup(id, name, address));
+            signups.add(new Signup(id, name, address, event, anonymous));
+        }
+        
+        rs.close();
+        stmt.close();
+        conn.close();
+        
+        return signups;
+    }
+    
+    @Override
+    public List<Signup> findAllNonAnonymous() throws SQLException {
+        Connection conn = db.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Signup WHERE anonymous='false'");
+        
+        ResultSet rs = stmt.executeQuery();
+        List<Signup> signups = new ArrayList<>();
+        while(rs.next()) {
+            long id = rs.getLong("id");
+            String name = rs.getString("username");
+            String address = rs.getString("address");
+            String event = rs.getString("event");
+            boolean anonymous = rs.getBoolean("anonymous");
+            
+            signups.add(new Signup(id, name, address, event, anonymous));
+        }
+        
+        rs.close();
+        stmt.close();
+        conn.close();
+        
+        return signups;
+    }
+    
+    @Override
+    public List<Signup> findEventSignups(String eventname) throws SQLException {
+        Connection conn = db.getConnection();
+        String sqlite = "SELECT * FROM Signup WHERE anonymous='false' AND event='"+eventname+"';";
+        PreparedStatement stmt = conn.prepareStatement(sqlite);
+        
+        ResultSet rs = stmt.executeQuery();
+        List<Signup> signups = new ArrayList<>();
+        while(rs.next()) {
+            long id = rs.getLong("id");
+            String name = rs.getString("username");
+            String address = rs.getString("address");
+            String event = rs.getString("event");
+            boolean anonymous = rs.getBoolean("anonymous");
+            
+            signups.add(new Signup(id, name, address, event, anonymous));
         }
         
         rs.close();
@@ -58,7 +111,8 @@ public class SignupDao implements Dao<Signup, Long> {
     @Override
     public void save(Signup s) throws SQLException {
         Connection conn = db.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Signup (name, address) VALUES ('"+s.getName()+"', '"+s.getAddress()+"');");
+        String sqlite = "INSERT INTO Signup (username, address, event, anonymous) VALUES ('"+s.getUsername()+"', '"+s.getAddress()+"', '"+s.getEvent()+"', '"+s.getAnonymous()+"');";
+        PreparedStatement stmt = conn.prepareStatement(sqlite);
         stmt.executeUpdate();
         
         stmt.close();

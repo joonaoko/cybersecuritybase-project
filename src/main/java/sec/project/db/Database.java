@@ -23,9 +23,11 @@ public class Database {
     public void init() {
         List<String> sqlite = new ArrayList<>();
         
-        sqlite.add("CREATE TABLE Signup (id integer PRIMARY KEY, name varchar(255), address varchar(255));");
-        sqlite.add("INSERT INTO Signup (name, address) VALUES ('Erik Example', 'Test Address 1');");
-        sqlite.add("INSERT INTO Signup (name, address) VALUES ('Tessa Tester', 'Test Address 2');");
+        sqlite.add("CREATE TABLE Signup (id integer PRIMARY KEY, username varchar(255), address varchar(255), event varchar(255), anonymous boolean);");
+        sqlite.add("INSERT INTO Signup (username, address, event, anonymous) VALUES ('user1', 'Test Address 1', '100m sprint', 'false');");
+        sqlite.add("INSERT INTO Signup (username, address, event, anonymous) VALUES ('user1', 'Test Address 1', '200m sprint', 'true');");
+        sqlite.add("INSERT INTO Signup (username, address, event, anonymous) VALUES ('user2', 'Test Address 2', 'longjump', 'false');");
+        sqlite.add("INSERT INTO Signup (username, address, event, anonymous) VALUES ('user2', 'Test Address 2', 'triple jump', 'true');");
         
         String dbUrl = System.getenv("JDBC_DATABASE_URL");
         
